@@ -5,14 +5,14 @@ import pymysql
 if __name__ == '__main__':
 
     # 设置tushare pro的token并获取连接
-    ts.set_token('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+    ts.set_token('c1e2a05c71936f78e19e37807638e73fe1a6e32dccd428d5deab8701')
     pro = ts.pro_api()
     # 设定获取日线行情的初始日期和终止日期，其中终止日期设定为昨天。
-    start_dt = '20100101'
+    start_dt = '20140101'
     time_temp = datetime.datetime.now() - datetime.timedelta(days=1)
     end_dt = time_temp.strftime('%Y%m%d')
     # 建立数据库连接,剔除已入库的部分
-    db = pymysql.connect(host='127.0.0.1', user='root', passwd='admin', db='stock', charset='utf8')
+    db = pymysql.connect(host='127.0.0.1', user='root', passwd='root', db='stock', charset='utf8mb4')
     cursor = db.cursor()
     # 设定需要获取数据的股票池
     stock_pool = ['603912.SH','300666.SZ','300618.SZ','002049.SZ','300672.SZ']
