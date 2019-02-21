@@ -25,19 +25,56 @@ if __name__ == '__main__':
 
     # 查询当前所有正常上市交易的股票列表
     data = pro.stock_basic(exchange='', list_status='L',
-                           fields='ts_code,symbol,name,area,industry,market,is_hs,list_date')
-    print(data)
-
+                           fields='ts_code,symbol,name,area,industry,fullname'\
+                                  ',enname,market,exchange,'\
+                                  'curr_type,list_status,list_date,delist_date,is_hs')
     try:
-        conn = MysqlHelper(host="127.0.0.1", user="root", password="root", charset="utf8", database="youke", port=3306)
-        # 根据字段统计count, join>>AND,OR,可以不传，默认为AND
-        print(conn.findKeySql(const.COUNT, table="t_company", params={"company_id": "114"}, join="AND"))
+        conn = MysqlHelper(host="127.0.0.1", user="root", password="root", charset="utf8", database="stock", port=3306)
+        # 根据字段统计count, join>>AND,OR,可以不传，默认为AND0-
 
-        for stock in data:
-            print(stock)
-
+        total = len(data)
+        for i in range(total - 1):
+            ts = data.iloc[i]["ts_code"]
+            cnt = conn.findKeySql(const.COUNT, table="stock_basic", params={"ts_code": ts}, join="AND")
+            if cnt == 0:
+                print("处理%d/%d：：插入：：%s" % (int(i), int(total), ts))
+                conn.findKeySql(const.INSERT, table="stock_basic",
+                                             data={"ts_code": data.iloc[i]["ts_code"],
+                                                     "symbol": data.iloc[i]["symbol"],
+                                                     "ts_code": data.iloc[i]["ts_code"],
+                                                     "symbol": data.iloc[i]["symbol"],
+                                                     "name": data.iloc[i]["name"],
+                                                     "area": data.iloc[i]["area"],
+                                                     "industry": data.iloc[i]["industry"],
+                                                     "fullname": data.iloc[i]["fullname"],
+                                                     "enname": data.iloc[i]["enname"],
+                                                     "market": data.iloc[i]["market"],
+                                                     "exchange": data.iloc[i]["exchange"],
+                                                     "curr_type": data.iloc[i]["curr_type"],
+                                                     "list_status": data.iloc[i]["list_status"],
+                                                     "list_date": data.iloc[i]["list_date"],
+                                                     "delist_date": data.iloc[i]["delist_date"],
+                                                     "is_hs": data.iloc[i]["is_hs"]})
+            else:
+                print("处理%d/%d：：更新：：%s" % (int(i), int(total), ts))
+                conn.findKeySql(const.UPDATE_BY_ATTR, table="stock_basic",
+                                         data={"symbol": data.iloc[i]["symbol"],
+                                                 "ts_code": data.iloc[i]["ts_code"],
+                                                 "symbol": data.iloc[i]["symbol"],
+                                                 "name": data.iloc[i]["name"],
+                                                 "area": data.iloc[i]["area"],
+                                                 "industry": data.iloc[i]["industry"],
+                                                 "fullname": data.iloc[i]["fullname"],
+                                                 "enname": data.iloc[i]["enname"],
+                                                 "market": data.iloc[i]["market"],
+                                                 "exchange": data.iloc[i]["exchange"],
+                                                 "curr_type": data.iloc[i]["curr_type"],
+                                                 "list_status": data.iloc[i]["list_status"],
+                                                 "list_date": data.iloc[i]["list_date"],
+                                                 "delist_date": data.iloc[i]["delist_date"],
+                                                 "is_hs": data.iloc[i]["is_hs"]},
+                                         params={"ts_code": ts}, join='AND')
     except Exception as e:
         print("执行sql出错:")
         raise e
         conn.close()
-
