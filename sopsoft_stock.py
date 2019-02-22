@@ -33,7 +33,7 @@ if __name__ == '__main__':
         # 根据字段统计count, join>>AND,OR,可以不传，默认为AND0-
 
         total = len(data)
-        for i in range(total - 1):
+        for i in range(total):
             ts = data.iloc[i]["ts_code"]
             cnt = conn.findKeySql(const.COUNT, table="stock_basic", params={"ts_code": ts}, join="AND")
             if cnt == 0:
@@ -41,7 +41,6 @@ if __name__ == '__main__':
                 conn.findKeySql(const.INSERT, table="stock_basic",
                                              data={"ts_code": data.iloc[i]["ts_code"],
                                                      "symbol": data.iloc[i]["symbol"],
-                                                     "ts_code": data.iloc[i]["ts_code"],
                                                      "symbol": data.iloc[i]["symbol"],
                                                      "name": data.iloc[i]["name"],
                                                      "area": data.iloc[i]["area"],
@@ -59,8 +58,6 @@ if __name__ == '__main__':
                 print("处理%d/%d：：更新：：%s" % (int(i), int(total), ts))
                 conn.findKeySql(const.UPDATE_BY_ATTR, table="stock_basic",
                                          data={"symbol": data.iloc[i]["symbol"],
-                                                 "ts_code": data.iloc[i]["ts_code"],
-                                                 "symbol": data.iloc[i]["symbol"],
                                                  "name": data.iloc[i]["name"],
                                                  "area": data.iloc[i]["area"],
                                                  "industry": data.iloc[i]["industry"],
